@@ -106,7 +106,7 @@ def main(input_file, depot_lat, depot_lng, max_distance):
 
 
 # Example usage:
-input_file = "../../input_datasets/part_b_input_dataset_2.csv"
+input_file = "../../input_datasets/part_b_input_dataset_1.csv"
 depot_lat = 43.81
 depot_lng = 126.57
 max_distance = 20  # Maximum distance each vehicle can travel
