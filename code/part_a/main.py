@@ -2,7 +2,6 @@ import csv
 import itertools
 from geopy.distance import geodesic
 
-
 def create_distance_matrix(distances):
     nodes = list(distances.keys())
     depot_index = nodes.index('depot')
@@ -24,7 +23,7 @@ def calculate_distance(points, order):
     total_distance = 0
     for i in range(len(order) - 1):
         total_distance += points[order[i]][order[i+1]]
-    total_distance += points[order[-1]][order[0]]
+    total_distance += points[order[-1]][order[0]]  # Return to the starting city
     return total_distance
 
 def tsp(points):
@@ -39,6 +38,7 @@ def tsp(points):
             best_distance = distance
             best_path = perm
 
+    # Ensure the path returns to the starting city
     best_path = list(best_path) + [best_path[0]]
 
     return best_distance, best_path
@@ -81,7 +81,7 @@ def process_csv(filename):
     graph = convert_to_graph(distances)
     matrix = create_distance_matrix(graph)
     distance, path = tsp(matrix)
-    return distance, path
+    return distance, path, filename
 
 def convert_to_graph(distances):
     graph = {}
@@ -98,21 +98,20 @@ input_filenames = ['part_a_input_dataset_1.csv', 'part_a_input_dataset_2.csv', '
 
 results = []
 for filename in input_filenames:
-    distance, path = process_csv(filename)
-    results.append({'Filename': filename, 'Shortest Distance': distance, 'Shortest Path': ' -> '.join(map(str, path))})
-
-for result in results:
-    print("Filename:", result['Filename'])
-    print("Shortest Distance:", result['Shortest Distance'])
-    print("Shortest Path:", result['Shortest Path'])
+    distance, path, file_name = process_csv(filename)
+    results.append({'Filename': file_name, 'Shortest Distance': distance, 'Shortest Path': path})
+    print("Input File:", file_name)
+    print("Shortest Distance:", distance)
+    print("Shortest Path:", path)
     print()
 
-output_filename = 'output.csv'
+# Write results to another CSV file
+output_filename = 'shortest_distances.csv'
 with open(output_filename, 'w', newline='') as csvfile:
-    fieldnames = ['Filename', 'Shortest Distance', 'Shortest Path']
+    fieldnames = ['Filename', 'Shortest Distance']
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
     writer.writeheader()
     for result in results:
-        writer.writerow(result)
+        writer.writerow({'Filename': result['Filename'], 'Shortest Distance': result['Shortest Distance']})
 
-print("Output written to", output_filename)
+print("Shortest distances written to", output_filename)
