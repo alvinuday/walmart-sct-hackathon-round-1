@@ -69,20 +69,6 @@ def calculate_distances(nodes):
 
     return distances
 
-def process_csv(filename):
-    data = []
-
-    with open(filename, 'r') as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            data.append(row)
-
-    distances = calculate_distances(data)
-    graph = convert_to_graph(distances)
-    matrix = create_distance_matrix(graph)
-    distance, path = tsp(matrix)
-    return distance, path, filename
-
 def convert_to_graph(distances):
     graph = {}
     for distance in distances:
@@ -97,8 +83,30 @@ def convert_to_graph(distances):
 input_filenames = ['part_a_input_dataset_1.csv', 'part_a_input_dataset_2.csv', 'part_a_input_dataset_3.csv', 'part_a_input_dataset_4.csv', 'part_a_input_dataset_5.csv']
 
 results = []
+
+import os
+
+def process_csv(folder, filename):
+    file_path = os.path.join(folder, filename)
+    data = []
+
+    with open(file_path, 'r') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            data.append(row)
+
+    distances = calculate_distances(data)
+    graph = convert_to_graph(distances)
+    matrix = create_distance_matrix(graph)
+    distance, path = tsp(matrix)
+    return distance, path, filename
+
+input_folder = 'input_datasets/part_a'
+input_filenames = ['part_a_input_dataset_1.csv', 'part_a_input_dataset_2.csv', 'part_a_input_dataset_3.csv', 'part_a_input_dataset_4.csv', 'part_a_input_dataset_5.csv']
+
+results = []
 for filename in input_filenames:
-    distance, path, file_name = process_csv(filename)
+    distance, path, file_name = process_csv(input_folder, filename)
     results.append({'Filename': file_name, 'Shortest Distance': distance, 'Shortest Path': path})
     print("Input File:", file_name)
     print("Shortest Distance:", distance)
